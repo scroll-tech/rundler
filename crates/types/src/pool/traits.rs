@@ -11,12 +11,11 @@
 // You should have received a copy of the GNU General Public License along with Rundler.
 // If not, see https://www.gnu.org/licenses/.
 
-use std::pin::Pin;
-
-use ethers::types::{Address, H256};
+use ethers::types::{Address, H256, U256};
 use futures_util::Stream;
 #[cfg(feature = "test-utils")]
 use mockall::automock;
+use std::pin::Pin;
 
 use super::{
     error::PoolError,
@@ -71,7 +70,7 @@ pub trait Pool: Send + Sync + 'static {
     ///
     /// The pool will notify the subscriber when a new chain head is received, and the pool
     /// has processed all operations up to that head.
-    async fn subscribe_new_heads(&self) -> PoolResult<Pin<Box<dyn Stream<Item = NewHead> + Send>>>;
+    async fn subscribe_new_heads(&self) -> PoolResult<Pin<Box<dyn Stream<Item=NewHead> + Send>>>;
 
     /// Get reputation status given entrypoint and address
     async fn get_reputation_status(
@@ -121,4 +120,7 @@ pub trait Pool: Send + Sync + 'static {
         paymaster: bool,
         reputation: bool,
     ) -> PoolResult<()>;
+
+    /// Create contract wallet
+    async fn scroll_create_wallet(&self, owners: Vec<Address>, nonce: U256) -> PoolResult<()>;
 }

@@ -32,6 +32,7 @@ use rundler_types::{builder::Builder, chain::ChainSpec, pool::Pool};
 use tokio_util::sync::CancellationToken;
 use tracing::info;
 
+use crate::scroll::ScrollApi;
 use crate::{
     admin::{AdminApi, AdminApiServer},
     debug::{DebugApi, DebugApiServer},
@@ -248,7 +249,7 @@ where
                     entry_point_router.clone(),
                     self.pool.clone(),
                 )
-                .into_rpc(),
+                    .into_rpc(),
             )?
         }
 
@@ -260,6 +261,10 @@ where
             module.merge(AdminApi::new(self.pool.clone()).into_rpc())?;
         }
 
+        if self.args.api_namespaces.contains(&ApiNamespace::Scroll) {
+            module.merge(ScrollApi::new(self.pool.clone()).into_rpc())?;
+        }
+
         if self.args.api_namespaces.contains(&ApiNamespace::Rundler) {
             module.merge(
                 RundlerApi::new(
@@ -269,7 +274,7 @@ where
                     self.pool.clone(),
                     self.args.rundler_api_settings,
                 )
-                .into_rpc(),
+                    .into_rpc(),
             )?;
         }
 

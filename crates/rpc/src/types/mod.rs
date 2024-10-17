@@ -43,6 +43,7 @@ pub enum ApiNamespace {
     Debug,
     Rundler,
     Admin,
+    Scroll,
 }
 
 /// Conversion trait for RPC types adding the context of the entry point and chain id
@@ -278,6 +279,16 @@ pub struct RpcAdminClearState {
     pub clear_paymaster: Option<bool>,
     /// Field to set whether to clear reputation state
     pub clear_reputation: Option<bool>,
+}
+
+/// Wallet creation
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RpcScrollCreateWallet {
+    /// Field to set the owners
+    pub owners: Vec<Address>,
+    /// Field to set nonce
+    pub nonce: U256,
 }
 
 /// Paymaster balance

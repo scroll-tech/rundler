@@ -14,6 +14,7 @@
 use std::{pin::Pin, str::FromStr};
 
 use anyhow::Context;
+use ethers::core::k256::U256;
 use ethers::types::{Address, H256};
 use futures_util::Stream;
 use rundler_task::{
@@ -95,8 +96,8 @@ impl RemotePoolClient {
                         },
                         UnlimitedRetryOpts::default(),
                     )
-                    .await
-                    .into_inner(),
+                        .await
+                        .into_inner(),
                 );
             }
 
@@ -375,6 +376,10 @@ impl Pool for RemotePoolClient {
         }
     }
 
+    async fn scroll_create_wallet(&self, owners: Vec<Address>, nonce: U256) -> PoolResult<()> {
+        // TODO
+    }
+
     async fn debug_dump_mempool(&self, entry_point: Address) -> PoolResult<Vec<PoolOperation>> {
         let res = self
             .op_pool_client
@@ -547,7 +552,7 @@ impl Pool for RemotePoolClient {
         }
     }
 
-    async fn subscribe_new_heads(&self) -> PoolResult<Pin<Box<dyn Stream<Item = NewHead> + Send>>> {
+    async fn subscribe_new_heads(&self) -> PoolResult<Pin<Box<dyn Stream<Item=NewHead> + Send>>> {
         let (tx, rx) = mpsc::unbounded_channel();
         let client = self.op_pool_client.clone();
 
