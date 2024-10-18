@@ -11,16 +11,18 @@
 // You should have received a copy of the GNU General Public License along with Rundler.
 // If not, see https://www.gnu.org/licenses/.
 
-use anyhow::Context;
-use async_trait::async_trait;
-use ethers::types::Address;
-use jsonrpsee::{core::RpcResult, proc_macros::rpc};
-use rundler_types::pool::Pool;
-
 use crate::{
     types::RpcScrollCreateWallet,
     utils::{self, InternalRpcResult},
 };
+use anyhow::Context;
+use async_trait::async_trait;
+use ethers::types::Address;
+use jsonrpsee::{core::RpcResult, proc_macros::rpc};
+use rundler_provider::Provider;
+use rundler_sim::Funder;
+use rundler_types::pool::Pool;
+use std::sync::Arc;
 
 /// Scroll API
 #[rpc(client, server, namespace = "scroll")]
@@ -31,19 +33,13 @@ pub trait ScrollApi {
 }
 
 pub(crate) struct ScrollApi<P> {
-    pool: P,
-}
-
-impl<P> ScrollApi<P> {
-    pub(crate) fn new(pool: P) -> Self {
-        Self { pool }
-    }
+    funder: Funder<P>,
 }
 
 #[async_trait]
 impl<P> ScrollApiServer for ScrollApi<P>
 where
-    P: Pool,
+    P: Provider,
 {
     async fn create_wallet(&self, create_wallet_params: RpcScrollCreateWallet) -> RpcResult<String> {
         utils::safe_call_rpc_handler(
@@ -55,15 +51,21 @@ where
 
 impl<P> ScrollApi<P>
 where
-    P: Pool,
+    P: Provider,
 {
+    pub(crate) fn new(provider: Arc<P>) -> Self {
+        Self {
+            funder: Funder::new(provider),
+        }
+    }
+
     async fn create_wallet(&self, clear_params: RpcScrollCreateWallet) -> InternalRpcResult<String> {
-        self.pool
-            .scroll_create_wallet(
+        self.funder.
+            create_wallet(
                 clear_params.owners, clear_params.nonce,
             )
             .await
-            .context("should clear state")?;
+            .context("should create wallet")?;
 
         Ok("ok".to_string())
     }

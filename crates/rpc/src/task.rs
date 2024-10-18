@@ -32,7 +32,7 @@ use rundler_types::{builder::Builder, chain::ChainSpec, pool::Pool};
 use tokio_util::sync::CancellationToken;
 use tracing::info;
 
-use crate::scroll::ScrollApi;
+use crate::scroll::{ScrollApi, ScrollApiServer};
 use crate::{
     admin::{AdminApi, AdminApiServer},
     debug::{DebugApi, DebugApiServer},

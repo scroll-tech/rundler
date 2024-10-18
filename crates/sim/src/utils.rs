@@ -12,7 +12,7 @@
 // If not, see https://www.gnu.org/licenses/.
 
 use anyhow::Context;
-use ethers::types::{spoof, Address, BlockId, H256};
+use ethers::types::{spoof, Address, BlockId, H256, U256};
 use rundler_provider::Provider;
 use rundler_types::contracts::utils::get_code_hashes::{CodeHashesResult, GETCODEHASHES_BYTECODE};
 
@@ -35,3 +35,17 @@ pub(crate) async fn get_code_hash<P: Provider>(
         .context("should compute code hashes")?;
     Ok(H256(out.hash))
 }
+
+pub(crate) async fn get_address<P: Provider>(
+    provider: &P,
+    owners: Vec<Address>,
+    nonce: U256,
+) -> anyhow::Result<Address> {
+    provider.call_constructor()
+}
+
+pub(crate) async fn create_account<P: Provider>(
+    provider: &P,
+    owners: Vec<Address>,
+    nonce: U256,
+) -> anyhow::Result<Address> {}

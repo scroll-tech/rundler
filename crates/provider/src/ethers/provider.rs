@@ -230,7 +230,7 @@ impl<C: JsonRpcClient + 'static> Provider for EthersProvider<C> {
             data: Some(slot_data.into()),
             ..Default::default()
         }
-        .into();
+            .into();
 
         let result_bytes = self
             .call_raw(&tx)
@@ -244,7 +244,7 @@ impl<C: JsonRpcClient + 'static> Provider for EthersProvider<C> {
                 expected_ret_size,
                 result_bytes.len()
             )
-            .into());
+                .into());
         }
 
         Ok(result_bytes.chunks(32).map(H256::from_slice).collect())

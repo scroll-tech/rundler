@@ -63,3 +63,5 @@ mod types;
 pub use types::{ExpectedStorage, ViolationError};
 
 mod utils;
+pub mod action;
+pub use action::fund::Funder;
