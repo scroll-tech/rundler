@@ -12,7 +12,7 @@
 // If not, see https://www.gnu.org/licenses/.
 
 use ethers::{
-    types::{Address, Log, TransactionReceipt, H160, H256, U256},
+    types::{Address, Bytes, Log, TransactionReceipt, H160, H256, U256},
     utils::to_checksum,
 };
 use rundler_types::{
@@ -286,7 +286,7 @@ pub struct RpcAdminClearState {
 #[serde(rename_all = "camelCase")]
 pub struct RpcScrollCreateWallet {
     /// Field to set the owners
-    pub owners: Vec<Address>,
+    pub owners: Vec<Bytes>,
     /// Field to set nonce
     pub nonce: U256,
 }

@@ -36,6 +36,12 @@ fn generate_v0_6_bindings() -> Result<(), Box<dyn error::Error>> {
         "generate ABIs",
     )?;
 
+    run_command(
+        &mut copy_scroll_smart_wallet_factory_v06(),
+        "man cp",
+        "copy ScrollSmartWalletFactory.sol failed",
+    )?;
+
     MultiAbigen::from_abigens([
         abigen_of("v0_6", "IEntryPoint")?,
         abigen_of("v0_6", "IAggregator")?,
@@ -45,9 +51,10 @@ fn generate_v0_6_bindings() -> Result<(), Box<dyn error::Error>> {
         abigen_of("v0_6", "SimpleAccountFactory")?,
         abigen_of("v0_6", "VerifyingPaymaster")?,
         abigen_of("v0_6", "CallGasEstimationProxy")?,
+        abigen_of("v0_6", "ScrollSmartWalletFactory")?,
     ])
-    .build()?
-    .write_to_module("src/contracts/v0_6", false)?;
+        .build()?
+        .write_to_module("src/contracts/v0_6", false)?;
 
     Ok(())
 }
@@ -61,6 +68,12 @@ fn generate_v0_7_bindings() -> Result<(), Box<dyn error::Error>> {
         "generate ABIs",
     )?;
 
+    run_command(
+        &mut copy_scroll_smart_wallet_factory_v07(),
+        "man cp",
+        "copy ScrollSmartWalletFactory.sol failed",
+    )?;
+
     MultiAbigen::from_abigens([
         abigen_of("v0_7", "IEntryPoint")?,
         abigen_of("v0_7", "IAccount")?,
@@ -71,9 +84,10 @@ fn generate_v0_7_bindings() -> Result<(), Box<dyn error::Error>> {
         abigen_of("v0_7", "EntryPointSimulations")?,
         abigen_of("v0_7", "CallGasEstimationProxy")?,
         abigen_of("v0_7", "SenderCreator")?,
+        abigen_of("v0_7", "ScrollSmartWalletFactory")?,
     ])
-    .build()?
-    .write_to_module("src/contracts/v0_7", false)?;
+        .build()?
+        .write_to_module("src/contracts/v0_7", false)?;
 
     Ok(())
 }
@@ -90,8 +104,8 @@ fn generate_utils_bindings() -> Result<(), Box<dyn error::Error>> {
         abigen_of("utils", "GetGasUsed")?,
         abigen_of("utils", "StorageLoader")?,
     ])
-    .build()?
-    .write_to_module("src/contracts/utils", false)?;
+        .build()?
+        .write_to_module("src/contracts/utils", false)?;
 
     Ok(())
 }
@@ -143,6 +157,20 @@ fn abigen_of(extra_path: &str, contract: &str) -> Result<Abigen, Box<dyn error::
         contract,
         format!("contracts/out/{extra_path}/{contract}.sol/{contract}.json"),
     )?)
+}
+
+fn copy_scroll_smart_wallet_factory_v06() -> Command {
+    let mut cmd = Command::new("sh");
+    cmd.arg("-c")
+        .arg("mkdir -p ./contracts/out/v0_6/ScrollSmartWalletFactory.sol && cp ./contracts/src/scroll/ScrollSmartWalletFactory.json ./contracts/out/v0_6/ScrollSmartWalletFactory.sol/");
+    cmd
+}
+
+fn copy_scroll_smart_wallet_factory_v07() -> Command {
+    let mut cmd = Command::new("sh");
+    cmd.arg("-c")
+        .arg("mkdir -p ./contracts/out/v0_7/ScrollSmartWalletFactory.sol && cp ./contracts/src/scroll/ScrollSmartWalletFactory.json ./contracts/out/v0_7/ScrollSmartWalletFactory.sol/");
+    cmd
 }
 
 fn run_command(
